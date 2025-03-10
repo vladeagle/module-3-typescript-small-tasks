@@ -1,21 +1,35 @@
-// Напишите и типизируйте функцию, выполняющую запрос за данными по переданному URL.
-// Выведите их в консоль в формате: "ID: id, Email: email".
+interface IResponce {
+  postId: number
+  id: number
+  name: string
+  email: string
+  body: string
+}
 
-const COMMENTS_URL = 'https://jsonplaceholder.typicode.com/comments';
+interface ICommentItem {
+  ID: number
+  Email: string
+}
 
-const getData = (url) => {
-  // Your code here...
+const COMMENTS_URL = 'https://jsonplaceholder.typicode.com/comments'
+
+const getData = (url: string): Promise<Response> => {
+  return fetch(url)
 }
 
 getData(COMMENTS_URL)
-  .then(data => {
-    // Your code here...
-  });
+  .then((response: Response) => response.json())
+  .then((data: IResponce[]) => {
+    const items: ICommentItem[] = []
 
-/**
- * ID: 1, Email: Eliseo...
- * ID: 2, Email: Jayne_Kuhic...
- * ID: 3, Email: Nikita...
- * ID: 4, Email: Lew...
- * ...
- */
+    data.forEach((item: IResponce) => {
+      items.push({
+        ID: item.id,
+        Email: item.email,
+      })
+    })
+    console.log(items)
+  })
+  .catch((e) => {
+    console.error(e.message)
+  })
